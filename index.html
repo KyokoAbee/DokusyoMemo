@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>BookPad</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div id="startbutton_container" >
+  <div id="startbutton" >
+    <button id="bookRecord">読書を記録</button>
+    <button id="archive">読書記録一覧</button>
+    <button id="searchFor">積読から探す</button>
+    
+  </div>
+</div>
+
+    <!-- 入力フォームの作成 -->
+     <div id="form_container" class="form_container">
+      <form id="RecordForm" action="" class="formbox">
+
+        <input type="text" id="booktitle" name="booktitle" placeholder="本のタイトル"><br>
+
+        <input type="text" id="author" name="author" placeholder="著者"><br>
+
+        <input type="text" id="genre" name="genre" placeholder="ジャンル"><br>
+
+        <input type="date" id="data" name="data"><br>
+
+        <div class="radio_button">
+          <input type="radio" name="tsundoku" id="tsundoku" class="radio-input"><br>
+          <label for="tsundoku" class="radio-label">積読</label><br>
+        </div>
+
+        <textarea type="text" id="memo" name="memo" placeholder="メモ"></textarea><br>
+
+        <button type="submit" id="saveButton" class="saveButton">保存</button>
+      </form>
+     </div>
+
+
+    <!-- 記録一覧を表示するためのdiv -->
+    <div id="recordList" style="display: none;" class="formbox"></div>
+    <div id="monthList"></div> <!-- ここに記録を表示するためのdivを追加 -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script>
+
+
+// ボタンをフェードインさせる
+$("#startbutton").fadeIn(1000 ,function() {
+  // フェードイン後にアニメーションを開始する
+  const startButton = document.getElementById("startbutton");
+  startButton.style.display = "flex"; // スライドする前に表示
+});
+
+
+// submitしたときの処理
+// 既存データの取得
+let notRead = JSON.parse(localStorage.getItem('notRead')) || [];
+let alreadyRead = JSON.parse(localStorage.getItem('alreadyRead')) || [];
+
+document.querySelector('form').addEventListener("submit" ,function(event){
+  event.preventDefault();
+
+// フォームのデータを取得
+  const booktitle = document.getElementById("booktitle").value;
+  const author = document.getElementById("author").value;
+  const genre = document.getElementById("genre").value;
+  const data = document.getElementById("data").value;
+  const tsundoku = document.getElementById("tsundoku").checked;
+  const memo = document.getElementById("memo").value;
+  console.log(document.getElementById("tsundoku")); // ここでnullにならないか確認
+  console.log(document.getElementById("tsundoku").checked); // checkedの状態が正しいか確認
+
+//本の情報をオブジェクトとして保存
+  const bookinfo = {
+        booktitle: booktitle,
+        author: author,
+        genre: genre,
+        data: data,
+        tsundoku: tsundoku,
+        // feeling: feeling,
+        memo: memo
+    };
+
+  // 配列に追加
+  if(tsundoku){
+    notRead.unshift(bookinfo);
+    localStorage.setItem("notRead",JSON.stringify(notRead));
+    } else {
+      alreadyRead.unshift(bookinfo);
+      localStorage.setItem("alreadyRead",JSON.stringify(alreadyRead));
+    }
+    // alert("記録しました");
+    document.querySelector("form").reset(); /*保存のボタンを押したら、フォームをリセット*/
+});
+
+// オプション：月ごとのリストを作成
+
+
+
+// 読書を記録をクリックしたときにフォームを表示
+document.getElementById("bookRecord").addEventListener("click", function(){
+  const startButton = document.getElementById("startbutton");
+  const formContainer = document.getElementById("form_container");
+
+  // startbutton を上部にスライド
+  startButton.style.animation = "slideUp 0.5s ease-out forwards";
+  startButton.addEventListener("animationend" , function() {
+
+    startButton.style.position = "fixed";
+    startButton.style.top = "100px";
+    startButton.style.left = "0";
+    startButton.style.width = "100%";
+
+    // フォームを表示する
+    setTimeout(() => {
+    // const formContainer = document.getElementById("form_container");
+    formContainer.style.display = "flex";
+  },); 
+  document.body.style.backgroundImage = "none"; /*背景画像を消す*/
+  });
+    
+});
+
+
+
+  // 一覧表示をクリックしたときに、LocalStrage のalreadyRead から表示
+  document.getElementById("archive").addEventListener("click" ,function(){
+
+    // 読書を記録と同じ処理。まとめられる?…
+    const startButton = document.getElementById("startbutton");
+    const formContainer = document.getElementById("form_container");
+    const recordList = document.getElementById("recordList");
+
+  // startbutton を上部にスライド
+  startButton.style.animation = "slideUp 0.5s ease-out forwards";
+  startButton.addEventListener("animationend" , function() {
+
+        startButton.style.position = "fixed";
+        startButton.style.top = "100px";
+        startButton.style.left = "0";
+        startButton.style.width = "100%";
+      });
+
+  // LocalStrage からalreadrRead を取得
+  const alreadyRead = JSON.parse(localStorage.getItem('alreadyRead')) || [];
+  console.log(alreadyRead);  // デバッグ用に追加
+
+  // 表示領域をクリア
+    recordList.innerHTML = '';
+
+  // 背景画像を消す
+  document.body.style.backgroundImage = "none";
+
+  // alreadrRead を表示
+  if (alreadyRead.length > 0) {
+    alreadyRead.forEach(book => {
+      const bookDiv = document.createElement('div'); /*div作成*/
+      bookDiv.classList.add('bookRecord'); /*bookRecord というcss クラスを追加*/
+      // div の中身
+      bookDiv.innerHTML = `  
+        <h3>${book.booktitle}</h3>
+        <p>著者: ${book.author}</p>
+        <p>ジャンル: ${book.genre}</p>
+        <p>日付: ${book.data}</p>
+        <p>メモ: ${book.memo}</p>
+      `;
+
+      recordList.appendChild(bookDiv); /*作成したdiv をrecordList に追加して画面に表示*/
+    });
+  } else {
+    recordList.innerHTML = '<p>読書記録がありません。</p>';
+  }
+  // フォームを隠す
+  formContainer.style.display = "none";
+  // 記録一覧を表示
+  recordList.style.display = "block";
+  recordList.classList.add('visible');
+
+    });
+
+
+
+  // 積読を表示
+  document.getElementById("searchFor").addEventListener("click", function() {
+
+    // 他のボタンと同じ処理
+    const startButton = document.getElementById("startbutton");
+    const recordList = document.getElementById("recordList");
+    const formContainer = document.getElementById("form_container");
+
+  // startbutton を上部にスライド
+  startButton.style.animation = "slideUp 0.5s ease-out forwards";
+  startButton.addEventListener("animationend" , function() {
+
+        startButton.style.position = "fixed";
+        startButton.style.top = "100px";
+        startButton.style.left = "0";
+        startButton.style.width = "100%";
+      });
+
+  // LocalStrage からnotRead を取得
+  const notRead = JSON.parse(localStorage.getItem("notRead")) || [];
+  console.log(notRead);
+
+  // 表示領域をクリア
+  recordList.innerHTML = '';
+
+  // 背景画像を消す
+  document.body.style.backgroundImage = "none";
+
+  // notRead の内容を表示
+  if (notRead.length > 0) {
+    notRead.forEach((book) => {
+      const bookDiv = document.createElement("div");
+      bookDiv.classList.add("bookRecord");
+
+      bookDiv.innerHTML = `
+        <h3>${book.booktitle}</h3>
+        <p>著者: ${book.author}</p>
+        <p>ジャンル: ${book.genre}</p>
+        <p>日付: ${book.data}</p>
+        <p>メモ: ${book.memo}</p>
+      `;
+
+      recordList.appendChild(bookDiv); /*追記される処理*/
+    });
+  } else {
+    recordList.innerHTML = "<p>積読はありません。</p>";
+  }
+
+  // フォームを隠す
+  formContainer.style.display = "none";
+  // 記録一覧を表示
+  recordList.style.display = "block";
+  recordList.classList.add("visible");
+
+  });
+
+
+  // キーワード検索
+
+
+  </script>
+
+</body>
+
+</html>

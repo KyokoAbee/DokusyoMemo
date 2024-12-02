@@ -1,0 +1,164 @@
+header{
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+}
+
+body {
+    background-image:url(../img/book4.jpg);
+    background-position: center;
+    background-size: cover; /* 画像を全画面に拡大・縮小 */
+    background-repeat: no-repeat; /* 繰り返さない */
+    height: 100vh;
+    margin: 0;
+   /*overflow: hidden; /* スクロール防止 */
+}
+
+#startbutton_container {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    height: 100vh; /* ビューポートの高さ全体を占める */
+    width: 100vw; /* ビューポートの幅全体を占める */
+    margin: 0; /* 外側の余白をゼロにする */
+    /*position: fixed; /* 常に画面中央に表示 */
+    /*top: 0; /* 上端からの距離をゼロにする */
+    /*left: 0; /* 左端からの距離をゼロにする */
+    /* z-index: 10;  */
+}
+/* スタートボタン */
+@keyframes slideUp {
+    0% {
+        transform: translateY(100%); /*初期位置*/
+    }
+    100% {
+        transform: translateY(0); /*最終位置*/
+    }
+}
+
+#startbutton {
+    /* display: none; 初期状態は非表示 */
+    position: relative;
+    transform: translateY(0);
+
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+
+#startbutton button {
+    /* background-color: black; */
+    border-radius: 0;
+    color: black;
+    cursor: pointer;
+    border: 2px solid #000;
+    font-size: 25px;
+    background: #fff;
+    -webkit-box-shadow: 4px 4px 0 #000;
+  box-shadow: 4px 4px 0 #000;
+}
+
+#startbutton button:hover {
+    -webkit-box-shadow: -4px -4px 0 #000;
+    box-shadow: -4px -4px 0 #000;
+}
+
+#startbutton button:active {
+    box-shadow: none;
+    transform: translateY(5px);
+}
+
+
+
+/* フォーム */
+.formbox {
+    background: #ffe9d8; /* 背景色の指定 */
+    border: #ffa868 5px dotted; /* 境界線の指定 */
+    padding: 10px; /* 内側の余白 */
+    width: 600px; /* 幅を指定 */
+    min-height: 480px; /* 最低高さを指定（高さが足りない場合に拡張される） */
+    overflow: auto; /* 内容が多い場合にスクロールを表示 */
+    margin: 0 auto; /* 中央に配置 */
+    box-shadow: 0px 0px 4px 2px rgba(162,162,162,0.4); /* 影の指定 */
+    
+}
+
+.formbox p {
+    margin:0;
+    padding:0;
+}
+
+#form_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    height: 100vh; /* ビューポートの高さ全体を占める */
+    width: 100vw; /* ビューポートの幅全体を占める */
+    top: 0; /* フォームをstartbuttonがあった場所に配置 */
+    left: 0; /* 中央揃え */
+    /*background-color: rgba(145, 196, 87, 0.5); /* 半透明の背景色 */
+    /*z-index: 20; /* 他の要素の上に表示 */
+    display: none; /*初期状態では非表示*/
+}
+
+
+#form {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px; /* フォームの角を丸くする半径 */
+    padding: 20px; /* 内側に余白を追加 */
+    border: 1px solid #ccc; /* 枠線を追加 */
+    background-color: #f9f9f9; /* 背景色を追加 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 影を追加して立体感を演出 */
+    width: 80%; /* フォームの横幅（調整可能） */
+    max-width: 500px; /* フォームの最大横幅 */
+    z-index: 10; /* 他の要素の上に表示 */
+}
+
+input, select, textarea, button {
+    border-radius: 5px; /* フォームの角を丸くする半径 */
+    background-color: #d7d7d7;
+    -webkit-border-radius: 5px;
+    font-size: 15px;
+    margin-bottom: 15px; /* 各フォーム要素の下に15pxの余白を追加 */
+    padding: 10px; /* フォーム要素の内側に余白を追加 */
+    border-radius: 5px;
+    background-color: #d7d7d7;
+    font-size: 20px;
+}
+
+#recordList {
+    display: none;
+    position: absolute; /* 絶対位置指定 */
+    top: 60%; /* 画面の中央に配置 */
+    left: 50%; /* 画面の中央に配置 */
+    transform: translate(-50%, -50%); /* 中央揃え */
+    width: 80%; /* 横幅を調整（必要に応じて変更） */
+    max-width: 600px; /* 最大横幅を指定 */
+    height: 70vh; /* 高さを指定（必要に応じて変更） */
+    overflow: auto; /* スクロール可能にする（内容が多い場合に対応） */
+    padding: 20px; /* 内側の余白 */
+    /* background-color: #fff; 背景色を白に設定 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 影をつけて立体感を演出 */
+    z-index: 10; /* 他の要素の上に表示 */
+}
+
+#recordList.visible {
+    display: block; /* visible クラスを追加して表示 */
+}
+
+.radio_button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+}
+
+.saveButton:active {
+    transform: scale(0.95); /* クリック時に少し縮む */
+    background-color: #ffa868; /* 色を変更 */
+    box-shadow: none; /* 影を消す */
+    transition: all 0.1s ease-out; /* スムーズなアニメーション */
+}
